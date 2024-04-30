@@ -1,24 +1,23 @@
-name: 'Close stale issues'
-
-on:
-  schedule:
-    - cron: '30 7 * * *'
-  workflow_dispatch:
-
-permissions:
-  issues: write
-
 jobs:
   stale:
     if: github.repository_owner == 'opentripplanner'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - uses: actions/stale@v6.0.1
-        id: stale
-        with:
-          stale-issue-message: 'This issue is stale because it has been open 90 days with no activity. Remove stale label or comment or this will be closed in 30 days'
-          days-before-stale: 90
-          days-before-close: 30
-          operations-per-run: 260
-          exempt-issue-labels: 'Roadmap'
-          ascending: true
+    - continue-on-error: true
+      id: stale
+      uses: actions/stale@v6.0.1
+      with:
+        ascending: true
+        days-before-close: 30
+        days-before-stale: 90
+        exempt-issue-labels: Roadmap
+        operations-per-run: 260
+        stale-issue-message: This issue is stale because it has been open 90 days
+          with no activity. Remove stale label or comment or this will be closed in
+          30 days
+name: Close stale issues
+on:
+  repository_dispatch:
+    types: trigger-ga___close_stale_pr_and_issues.yml
+permissions:
+  issues: write
